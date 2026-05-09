@@ -16,13 +16,14 @@ namespace NameChests {
 			if (graphicalObject == null)
 				return;
 
-			if (!graphicalObject.TryGetComponent<EntityMonoBehaviour>(out var entityMono) || !LabelUtils.HasLabel(entityMono))
+			if (!graphicalObject.TryGetComponent<EntityMonoBehaviour>(out var entityMono) || !LabelUtils.HasLabel(entityMono, out var offset))
 				return;
 
 			var entityMonoType = entityMono.GetType();
 			if (!AlreadyModifiedGraphicalObjects.Contains(entityMonoType)) {
 				GraphicalObjectUtils.ModifyGraphicalObject(entityMonoType, (_, root) => {
-					root.AddComponent<ChestLabelInitializer>();
+					var initializer = root.AddComponent<WorldLabelInitializer>();
+					initializer.offset = offset;
 				});
 				AlreadyModifiedGraphicalObjects.Add(entityMonoType);	
 			}

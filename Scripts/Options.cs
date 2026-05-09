@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using NameChests.UserInterface;
-using NameChests.Utilities;
 using Newtonsoft.Json;
 using PugMod;
 using UnityEngine;
@@ -11,7 +10,7 @@ namespace NameChests {
 		public static Options Instance { get; private set; } = new();
 		
 		private const string FilePath = Main.InternalName + "/Options.json";
-		private const int CurrentVersion = 0;
+		private const int CurrentVersion = 1;
 		private const float AutosaveInterval = 10f;
 
 		public bool ShowOnHover {
@@ -21,39 +20,6 @@ namespace NameChests {
 					return;
 				
 				_data.ShowOnHover = value;
-				_isDirty = true;
-			}
-		}
-		
-		public bool DeactivateInputOnDeselect {
-			get => _data.DeactivateInputOnDeselect;
-			set {
-				if (_data.DeactivateInputOnDeselect == value)
-					return;
-				
-				_data.DeactivateInputOnDeselect = value;
-				_isDirty = true;
-			}
-		}
-		
-		public HsvColor Color {
-			get => _data.Color;
-			set {
-				if (_data.Color.Equals(value))
-					return;
-
-				_data.Color = value;
-				_isDirty = true;
-			}
-		}
-		
-		public HsvColor OutlineColor {
-			get => _data.OutlineColor;
-			set {
-				if (_data.OutlineColor.Equals(value))
-					return;
-
-				_data.OutlineColor = value;
 				_isDirty = true;
 			}
 		}
@@ -126,9 +92,6 @@ namespace NameChests {
 		private class OptionsData {
 			public int Version { get; set; } = CurrentVersion;
 			public bool ShowOnHover { get; set; }
-			public bool DeactivateInputOnDeselect { get; set; }
-			public HsvColor Color { get; set; } = new(0f, 0f, 1f);
-			public HsvColor OutlineColor { get; set; } = new(0f, 0f, 0f);
 		}
 	}
 }

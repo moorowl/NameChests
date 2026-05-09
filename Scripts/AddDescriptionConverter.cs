@@ -12,9 +12,10 @@ namespace NameChests {
 			if (graphicalObject == null)
 				return;
 
-			if (!graphicalObject.TryGetComponent<EntityMonoBehaviour>(out var entityMono) || !LabelUtils.HasLabel(entityMono))
+			if (!graphicalObject.TryGetComponent<EntityMonoBehaviour>(out var entityMono) || !LabelUtils.HasLabel(entityMono, out _))
 				return;
 			
+			EnsureHasComponent<AlwaysDropOneCD>();
 			EnsureHasBuffer<DescriptionBuffer>();
 		}
 	}
