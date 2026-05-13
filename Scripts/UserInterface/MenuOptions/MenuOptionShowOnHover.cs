@@ -1,19 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NameChests.UserInterface.MenuOptions {
-	public class MenuOptionShowOnHover : MenuOptionCycling<bool> {
-		protected override List<bool> AvailableOptions => new() {
-			true,
-			false
+	public class MenuOptionShowOnHover : MenuOptionCycling<ShowOnHoverMode> {
+		protected override List<ShowOnHoverMode> AvailableOptions => new() {
+			ShowOnHoverMode.None,
+			ShowOnHoverMode.Show,
+			ShowOnHoverMode.ShowOverrideFacing
 		};
 
-		protected override bool CurrentOption {
+		protected override ShowOnHoverMode CurrentOption {
 			get => Options.Instance.ShowOnHover;
 			set => Options.Instance.ShowOnHover = value;
 		}
 		
 		protected override void UpdateText() {
-			valueText.Render(CurrentOption ? "on" : "off");
+			valueText.Render(CurrentOption switch {
+				ShowOnHoverMode.None => "off",
+				ShowOnHoverMode.Show => "on",
+				ShowOnHoverMode.ShowOverrideFacing => "NameChests-Options/ShowOnHover_OnOverrideFacing",
+				_ => throw new ArgumentOutOfRangeException()
+			});
 		}
 	}
 }

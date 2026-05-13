@@ -2,6 +2,7 @@
 using System.Text;
 using NameChests.UserInterface;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PugMod;
 using UnityEngine;
 
@@ -13,13 +14,13 @@ namespace NameChests {
 		private const int CurrentVersion = 1;
 		private const float AutosaveInterval = 10f;
 
-		public bool ShowOnHover {
-			get => _data.ShowOnHover;
+		public ShowOnHoverMode ShowOnHover {
+			get => _data.ShowOnHoverMode;
 			set {
-				if (_data.ShowOnHover == value)
+				if (_data.ShowOnHoverMode == value)
 					return;
 				
-				_data.ShowOnHover = value;
+				_data.ShowOnHoverMode = value;
 				_isDirty = true;
 			}
 		}
@@ -36,8 +37,8 @@ namespace NameChests {
 		
 		public void Init() {
 			MenuAdder.OnInit += () => {
-				var menu = MenuAdder.AddMenu((RadicalOptionsMenu) Manager.menu.uiOptionsMenu, 19902, "NameChests-Options/Header");
-				menu.AddOptionFromPath(Main.AssetBundle, $"Assets/{Main.InternalName}/Prefabs/MenuOptions.prefab");
+				// var menu = MenuAdder.AddMenu((RadicalOptionsMenu) Manager.menu.uiOptionsMenu, 19902, "NameChests-Options/Header");
+				Manager.menu.uiOptionsMenu.AddOptionFromPath(Main.AssetBundle, $"Assets/{Main.InternalName}/Prefabs/MenuOptions.prefab");
 			};
 			
 			Load();
@@ -91,7 +92,8 @@ namespace NameChests {
 		
 		private class OptionsData {
 			public int Version { get; set; } = CurrentVersion;
-			public bool ShowOnHover { get; set; }
+			[JsonConverter(typeof(StringEnumConverter))]
+			public ShowOnHoverMode ShowOnHoverMode { get; set; }
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace NameChests {
 		private static readonly float2 HoveredDetectionOffset = new(0f, -0.2f);
 
 		private static EntityMonoBehaviour HoveredEntityMono;
-		
+
 		[HarmonyPatch(typeof(PlayerController), "ManagedUpdate")]
 		[HarmonyPostfix]
 		public static void PlayerController_ManagedUpdate(PlayerController __instance) {
@@ -31,15 +31,17 @@ namespace NameChests {
 		[HarmonyPatch(typeof(WorldLabel), "UpdateWorldText")]
 		[HarmonyPostfix]
 		public static void WorldLabel_UpdateWorldText_Postfix(WorldLabel __instance, int ____visibilityState, string __state, string text) {
-			if (____visibilityState == 1) {
-				if (EntityUtility.HasComponentData<IsClosestLocalInteractableCD>(__instance.entity, __instance.world)) {
-					var highlightObject = (Options.Instance.ShowOnHover && HoveredEntityMono == __instance && !string.IsNullOrWhiteSpace(__state))
-					                      || Manager.main.player.GetCurrentInteractableObject() == __instance.GetComponentInChildren<InteractableObject>();
-					EntityUtility.SetComponentEnabled<IsClosestLocalInteractableCD>(__instance.entity, __instance.world, highlightObject);
-				}
+			if (____visibilityState == 1 && __instance.worldLabel != null) {
+				var showOnFacing = Options.Instance.ShowOnHover != ShowOnHoverMode.ShowOverrideFacing;
+				var showOnHover = Options.Instance.ShowOnHover != ShowOnHoverMode.None;
 
-				if (Options.Instance.ShowOnHover && HoveredEntityMono == __instance && __instance.worldLabel != null && __instance.worldLabel.GetTextLength() == 0)
-					__instance.worldLabel.Render(__state, false, false, false);
+				var isBeingInteractedWith = Manager.main.player.GetCurrentInteractableObject() == __instance.GetComponentInChildren<InteractableObject>();
+				var showLabel = (showOnHover && HoveredEntityMono == __instance && !string.IsNullOrWhiteSpace(__state)) || (showOnFacing && isBeingInteractedWith);
+				
+				if (EntityUtility.HasComponentData<IsClosestLocalInteractableCD>(__instance.entity, __instance.world))
+					EntityUtility.SetComponentEnabled<IsClosestLocalInteractableCD>(__instance.entity, __instance.world, showLabel || isBeingInteractedWith);
+
+				__instance.worldLabel.Render(showLabel ? __state : "", false, false, false);
 			}
 		}
 		
