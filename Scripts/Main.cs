@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 
 namespace NameChests {
 	public class Main : IMod {
-		public const string Version = "2.0";
+		public const string Version = "2.1";
 		public const string InternalName = "NameChests";
 		public const string DisplayName = "More Labels";
 
